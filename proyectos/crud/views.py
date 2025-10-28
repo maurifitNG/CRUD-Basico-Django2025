@@ -41,12 +41,18 @@ def edit_task(request, task_id):
     }
     
     if request.method == 'POST':
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
             return redirect('crud:crud_list')
     else:
-        form = TaskForm(initial=initial_data)
+        form = TaskForm(instance=task, initial=initial_data)
         
     return render(request, 'edit_task.html', {'form': form})
 
+
+def delete_task(request, task_id):
+    if request.method == 'POST':
+        task = Task.objects.get(id=task_id)
+        task.delete()
+        return redirect('crud:crud_list')
